@@ -1,5 +1,6 @@
 const {Router} = require('express');
 const passport = require('passport');
+const SessionsController = require('../controllers/sessions.controller');
 
 const router = Router();
 
@@ -7,35 +8,17 @@ router.post('/register',
     passport.authenticate('register',{
         failureRedirect:'/api/sessions/failedRegister'
     }),
-    (req, res)=>{
-        res.send({status:'success', message:'User registered successfuly'})
-    })
+    SessionsController.register)
 
-router.get('/failedRegister',(req, res)=>{
-    res.status(400).send({status:'error', error:'There has been a problem with the register process'})
-})
-
-/** login */
+router.get('/failedRegister', SessionsController.handleRegisterFail)
 
 router.post('/login', 
     passport.authenticate('login',{
         failureRedirect:'/api/sessions/failedLogin'
     }),
-    (req, res)=>{
-        const {_id, first_name, last_name, role, email} = req.user; 
-        req.session.user = {
-            id: _id, 
-            first_name,
-            last_name,
-            role, 
-            email
-        }
-        res.send({status:'success', message:'User logged successfuly'})
-    })
+    SessionsController.login)
 
-router.get('/failedLogin',(req, res)=>{
-    res.status(400).send({status:'error', error:'There has been a problem with the login process'})
-})
+router.get('/failedLogin',SessionsController.handleLoginFail)
 
 module.exports = {
     sessionsRouter: router
