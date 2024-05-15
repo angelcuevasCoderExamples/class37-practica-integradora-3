@@ -39,7 +39,7 @@ class UsersController {
         await usersService.update(uid, user);
         await coursesService.update(cid, course);
 
-        mailingService.sendSimpleMail({
+        await mailingService.sendSimpleMail({
             from:'Codertest',
             to: req.user.email, 
             subject: 'you have successfully registed in a new course',
