@@ -14,13 +14,12 @@ const initializePassport = ()=>{
         usernameField: 'email'
     }, async (req, email, password, done)=>{
         try {
-            
             const {first_name, last_name, dni, gender } = req.body;
             if(!first_name || !last_name || !dni || !gender) return done(null, false, {message:'incomplete parameters'})
-            
+
             const existingUser = await usersManager.getBy({email})
             if(existingUser) return done(null, false, {message:'user by that email already exist'})
-            
+
             const newUserData = {
                 first_name, 
                 last_name,
@@ -29,7 +28,6 @@ const initializePassport = ()=>{
                 email,
                 password: hashPassword(password) 
             }
-
             let result = await usersManager.saveUser(newUserData)
             return done(null, result)
             
