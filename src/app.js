@@ -1,5 +1,4 @@
 const express = require('express');
-const port = 8080;
 const app = express();
 const usersRouter = require('./routes/users.router')
 const viewsRouter = require('./routes/views.router')
@@ -10,10 +9,11 @@ const initializePassport = require('./config/passport.config');
 const passport = require('passport');
 const { sessionsRouter } = require('./routes/sessions.router');
 const session = require('express-session');
+const { port, mongo } = require('./config/config');
 
 
 //*---database connection--//
-mongoose.connect(`mongodb+srv://angelpablocuevas1989:EghP7p3eTEtgWPyu@codercluster.5ny2sqo.mongodb.net/integracion`).then(()=>{
+mongoose.connect(mongo.URL).then(()=>{
     console.log("connected successsfuly")
 })
 
