@@ -7,5 +7,9 @@ module.exports = {
     port: process.env.PORT,
     mongo: {
         URL: process.env.MONGO_URL   
+    },
+    jwt: {
+        COOKIE_NAME: process.env.JWT_COOKIE_NAME,
+        SECRET: process.env.JWT_SECRET
     }
 }

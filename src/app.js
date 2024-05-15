@@ -10,6 +10,7 @@ const passport = require('passport');
 const { sessionsRouter } = require('./routes/sessions.router');
 const session = require('express-session');
 const { port, mongo } = require('./config/config');
+const cookieParser = require('cookie-parser');
 
 
 //*---database connection--//
@@ -23,12 +24,13 @@ app.set('views', `${__dirname}/views`)
 app.set('view engine','handlebars')
 
 //*--middlewares --*//
-app.use(session({
-    secret:'sessionSecret',
-    resave: false,
-    saveUninitialized: false,
-}))
+// app.use(session({ <---se cambió por una strategía usando jwt y cookies
+//     secret:'sessionSecret',
+//     resave: false,
+//     saveUninitialized: false,
+// }))
 
+app.use(cookieParser())
 initializePassport()
 app.use(passport.initialize())
 

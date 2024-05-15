@@ -2,6 +2,8 @@ const passport = require(`passport`);
 const local = require('passport-local');
 const UserManager = require('../dao/dbManagers/users')
 const {hashPassword, isValidPassword} = require('../uitils')
+const passportJWT = require('passport-jwt')
+const config = require('./config')
 
 const usersManager = new UserManager();
 
@@ -53,6 +55,17 @@ const initializePassport = ()=>{
         }
     }))
 
+    passport.use('current', new passportJWT.Strategy({
+        jwtFromRequest: passportJWT.ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: config.jwt.SECRET
+    },(jwt_payload, done)=>{
+        try {
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done(error)
+        }
+    }))
+
 }
 
 passport.serializeUser((user, done)=>{
@@ -64,6 +77,14 @@ passport.deserializeUser(async (id, done)=>{
     done(null, user)
 })
 
+const cookieExtractor = (req)=>{
+    let jwt  = null; 
+    if(req && req.cookies){
+        jwt = req.cookies[config.jwt.COOKIE_NAME]
+    }
+
+    return jwt; 
+}   
 
 
 module.exports = initializePassport;
