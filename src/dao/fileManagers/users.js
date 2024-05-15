@@ -5,7 +5,7 @@ const filePath = __dirname +'/files/user.json'
 class Users {
     static id = 0; 
     constructor(){
-        console.log('new intance')
+        //console.log('new intance')
     }
     async getAll(){
 

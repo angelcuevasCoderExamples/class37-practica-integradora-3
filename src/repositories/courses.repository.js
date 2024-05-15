@@ -11,6 +11,10 @@ class CoursesRepository {
         return await this.dao.getById(id);
     }
 
+    async getBy(options){
+        return await this.dao.getBy(options);
+    }
+
     async create(course){
         return await this.dao.saveCourse(course);
     }

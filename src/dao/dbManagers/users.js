@@ -2,7 +2,7 @@ const UserModel = require("../models/user.model");
 
 class Users {
     constructor(){
-        console.log('new intance of db manager')
+        //console.log('new intance of db manager')
     }
     async getAll(){
         let users = await UserModel.find().populate('courses').lean()

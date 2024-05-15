@@ -3,9 +3,10 @@ const local = require('passport-local');
 const UserManager = require('../dao/dbManagers/users')
 const {hashPassword, isValidPassword} = require('../uitils')
 const passportJWT = require('passport-jwt')
-const config = require('./config')
+const config = require('./config');
+const { usersService } = require('../repositories/services');
 
-const usersManager = new UserManager();
+
 
 const initializePassport = ()=>{
     
@@ -17,7 +18,7 @@ const initializePassport = ()=>{
             const {first_name, last_name, dni, gender } = req.body;
             if(!first_name || !last_name || !dni || !gender) return done(null, false, {message:'incomplete parameters'})
 
-            const existingUser = await usersManager.getBy({email})
+            const existingUser = await usersService.getBy({email})
             if(existingUser) return done(null, false, {message:'user by that email already exist'})
 
             const newUserData = {
@@ -28,7 +29,7 @@ const initializePassport = ()=>{
                 email,
                 password: hashPassword(password) 
             }
-            let result = await usersManager.saveUser(newUserData)
+            let result = await usersService.create(newUserData)
             return done(null, result)
             
         } catch (error) {
@@ -40,10 +41,9 @@ const initializePassport = ()=>{
     passport.use('login', new local.Strategy({
         usernameField: 'email'
     }, async (email, password, done)=>{
-        try {            
-            const user = await usersManager.getBy({email});
-            if(!user)  return done(null, false, {message:'user does not exist'})
-
+        try {          
+            const user = await usersService.getBy({email});
+            if(!user)  return done(null, false, {message:'user does not exist'})   
             if(!isValidPassword(user, password)) return done(null, false, {message:'Incorrect password'})
 
             return done(null, user)
