@@ -25,6 +25,7 @@ class Users {
 
     async updateUser(id, user){
         let result = await UserModel.updateOne({_id: id}, user);
+        return result; 
     }
 }
 

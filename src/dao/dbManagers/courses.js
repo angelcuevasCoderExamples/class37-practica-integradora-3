@@ -24,6 +24,4 @@ class Courses {
     }
 }
 
-module.exports = {
-    coursesDBManager: Courses
-};
+module.exports = Courses

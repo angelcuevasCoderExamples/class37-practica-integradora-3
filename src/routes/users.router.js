@@ -1,15 +1,11 @@
 const {Router} = require('express');
-const { coursesDBManager } = require('../dao/dbManagers/courses');
-const Users = require('../dao/dbManagers/users');
-
+const { usersService, coursesService } = require('../repositories/services');
 
 const router = Router();
-const usersManager = new Users()
-const coursesManager = new coursesDBManager();
 
 
 router.get('/',async (req, res)=>{
-    const users  = await usersManager.getAll()
+    const users  = await usersService.getAll()
     res.send({status:'success', payload: users})
 })
 
@@ -19,7 +15,7 @@ router.post('/', async (req, res)=>{
         return res.status(400).send({status:'error', error:'Incomplete data'})
     }
 
-    let result = await usersManager.saveUser(req.body)
+    let result = await usersService.create(req.body)
     res.send({status:'success', payload: result})
 })
 
@@ -27,11 +23,11 @@ router.post('/:uid/courses/:cid', async (req, res)=>{
     const {uid, cid} = req.params; 
 
     //user exists?
-    const user = await usersManager.getById(uid);
+    const user = await usersService.getById(uid);
     if(!user) return res.status(400).send({status:'error', error:'User not found'})
 
     //course exists?
-    const course = await coursesManager.getById(cid);
+    const course = await coursesService.getById(cid);
     if(!course) return  res.status(400).send({status:'error', error:'Course not found'})
 
     //user already on course? 
@@ -42,8 +38,8 @@ router.post('/:uid/courses/:cid', async (req, res)=>{
     user.courses.push(course._id);
     course.students.push(user._id);
 
-    await usersManager.updateUser(uid, user);
-    await coursesManager.updateCourse(cid, course);
+    await usersService.update(uid, user);
+    await coursesService.update(cid, course);
 
     res.send({status:'success', message:'user added to course successfuly'})
 })

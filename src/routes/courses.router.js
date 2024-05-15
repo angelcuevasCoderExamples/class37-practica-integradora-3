@@ -1,13 +1,10 @@
 const {Router} = require('express');
-const { coursesDBManager } = require('../dao/dbManagers/courses');
-
-
+const { coursesService } = require('../repositories/services');
 const router = Router();
-const manager = new coursesDBManager();
 
 
 router.get('/',async (req, res)=>{
-    const courses  = await manager.getAll()
+    const courses  = await coursesService.getAll()
     res.send({status:'success', courses})
 })
 
@@ -24,7 +21,7 @@ router.post('/', async (req, res)=>{
         students: []
     }
 
-    const result = await manager.saveCourse(newCourse)
+    const result = await coursesService.create(newCourse)
     res.send({status:'success', payload: result})
 })
 
