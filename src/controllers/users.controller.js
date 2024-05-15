@@ -1,4 +1,6 @@
 const { usersService, coursesService } = require('../repositories/services');
+const MailingService = require('../services/mailing.service');
+const mailingService = new MailingService();
 
 class UsersController {
     static async getAll(req, res){
@@ -36,6 +38,13 @@ class UsersController {
     
         await usersService.update(uid, user);
         await coursesService.update(cid, course);
+
+        mailingService.sendSimpleMail({
+            from:'Codertest',
+            to: req.user.email, 
+            subject: 'you have successfully registed in a new course',
+            html: `<div>you have successfully registed in a new course</div>`
+        })
     
         res.send({status:'success', message:'user added to course successfuly'})
     }
